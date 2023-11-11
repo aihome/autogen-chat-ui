@@ -3,7 +3,7 @@ import asyncio
 from autogen import AssistantAgent, UserProxyAgent
 
 
-st.write("""# AutoGen AI Agents Test""")
+st.write("""# AutoGen AI Agents Test 2""")
 
 class TrackableAssistantAgent(AssistantAgent):
     def _process_received_message(self, message, sender, silent):
