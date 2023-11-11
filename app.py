@@ -48,11 +48,21 @@ with st.container():
         }
         # create an AssistantAgent instance named "assistant"
         assistant = TrackableAssistantAgent(
-            name="assistant", llm_config=llm_config)
+            name="assistant",
+            llm_config=llm_config,
+            #system_message = ''"TERMINATE` in the end when everything is done."''
+        )
 
         # create a UserProxyAgent instance named "user"
         user_proxy = TrackableUserProxyAgent(
-            name="user", human_input_mode="NEVER", llm_config=llm_config)
+            name="user",
+            llm_config=llm_config,
+            human_input_mode="TERMINATE",
+            max_consecutive_auto_reply=10,
+            is_termination_msg=lambda x: x.get("content", "").rstrip().endswith("TERMINATE"),
+            code_execution_config="FALSE",
+            system_message = """Reply TERMINATE if the task has been solved at full satisfaction. Otherwise, reply CONTINUE, or the reason why the task is not solved yet."""        
+        )
 
         # Create an event loop
         loop = asyncio.new_event_loop()
@@ -63,7 +73,7 @@ with st.container():
             await user_proxy.a_initiate_chat(
                 assistant,
                 message=user_input,
-            )
+        )
 
         # Run the asynchronous function within the event loop
         loop.run_until_complete(initiate_chat())
